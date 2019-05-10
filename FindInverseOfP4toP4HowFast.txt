@@ -1,0 +1,110 @@
+
++ M2 --no-readline --print-width 79
+Macaulay2, version 1.13.0.1
+--loading configuration for package "FourTiTwo" from file /home/schwede/.Macaulay2/init-FourTiTwo.m2
+--loading configuration for package "Topcom" from file /home/schwede/.Macaulay2/init-Topcom.m2
+with packages: ConwayPolynomials, Elimination, IntegralClosure, InverseSystems,
+               LLLBases, PrimaryDecomposition, ReesAlgebra, TangentCone,
+               Truncations
+
+
+i1 : loadPackage "Cremona"; loadPackage "RationalMaps";
+
+--loading configuration for package "Cremona" from file /home/schwede/.Macaulay2/init-Cremona.m2
+
+--loading configuration for package "MapleInterface" from file /home/schwede/.Macaulay2/init-MapleInterface.m2
+
+--warning: symbol "parametrize" in Parametrization.Dictionary is shadowed by a symbol in Cremona.Dictionary
+
+--  use the synonym Parametrization$parametrize
+
+
+
+i3 : --we loaded RationalMaps with the modified code (using good heuristics for linear algebra)
+     
+	Q=QQ[x,y,z,t,u];
+
+
+
+i4 : phi=map(Q,Q,matrix{{x^5,y*x^4,z*x^4+y^5,t*x^4+z^5,u*x^4+t^5}}); -- this is a rational map from P^4 to P^4
+
+
+o4 : RingMap Q <--- Q
+
+
+
+i5 : (time inverseOfMap(phi, AssumeDominant=>true,CheckBirational=>false));
+
+Starting inverseOfMapSimis(SimisStrategy or HybridStrategy)
+
+inverseOfMapSimis:  About to compute partial Groebner basis of rees ideal up to degree {1, 1}.
+
+inverseOfMapSimis:  About to compute partial Groebner basis of rees ideal up to degree {1, 2}.
+
+inverseOfMapSimis:  About to compute partial Groebner basis of rees ideal up to degree {1, 4}.
+
+inverseOfMapSimis:  About to compute partial Groebner basis of rees ideal up to degree {1, 7}.
+
+inverseOfMapSimis:  About to compute partial Groebner basis of rees ideal up to degree {1, 11}.
+
+inverseOfMapSimis:  About to compute partial Groebner basis of rees ideal up to degree {1, 16}.
+
+inverseOfMapSimis:  We give up, using all of the previous computations, we  compute the whole Groebner basis of the rees ideal.  Increase HybridLimit and rerun to avoid this.
+
+inverseOfMapSimis: Found Jacobian dual matrix (or a weak form of it), it has  5 columns  and about  20 rows.
+
+inverseOfMapSimis: Looking for a nonzero minor
+
+Starting nonZeroMinor, looking for rank: 4, we will run it 1000 times.  If this is slow, rerun with MinorsCount=>0.
+
+nonZeroMinor: Found a nonzero minor non-randomly
+
+nonZeroMinor: looking for a random nonzero minor
+
+inverseOfMapSimis: We found a nonzero minor.
+     
+	-- used 0.256999 seconds
+
+
+o5 : RingMap Q <--- Q
+
+
+
+i6 : (time inverseOfMap(phi, AssumeDominant=>true,CheckBirational=>false, Verbose=>false));
+     -- used 0.253852 seconds
+
+
+o6 : RingMap Q <--- Q
+
+
+
+
+i8 : (time h = inverseMap(phi)); --the default command, has been in Macaulay2 in one form or another since 2010 in various packages
+     
+	-- used 107.538 seconds
+
+
+o8 : RingMap Q <--- Q
+
+
+
+i9 : isSameMap(o6, o8)
+matrix {{x^125, x^124*y, -x^120*y^5+x^124*z, x^100*y^25-5*x^104*y^20*z+10*x^108*y^15*z^2-10*x^112*y^10*z^3+5*x^116*y^5*z^4-x^120*z^5+x^124*t, -y^125+25*x^4*y^120*z-300*x^8*y^115*z^2+2300*x^12*y^110*z^3-12650*x^16*y^105*z^4+53130*x^20*y^100*z^5-177100*x^24*y^95*z^6+480700*x^28*y^90*z^7-1081575*x^32*y^85*z^8+2042975*x^36*y^80*z^9-3268760*x^40*y^75*z^10+4457400*x^44*y^70*z^11-5200300*x^48*y^65*z^12+5200300*x^52*y^60*z^13-4457400*x^56*y^55*z^14+3268760*x^60*y^50*z^15-2042975*x^64*y^45*z^16+1081575*x^68*y^40*z^17-480700*x^72*y^35*z^18+177100*x^76*y^30*z^19-53130*x^80*y^25*z^20+12650*x^84*y^20*z^21-2300*x^88*y^15*z^22+300*x^92*y^10*z^23-25*x^96*y^5*z^24+x^100*z^25-5*x^24*y^100*t+100*x^28*y^95*z*t-950*x^32*y^90*z^2*t+5700*x^36*y^85*z^3*t-24225*x^40*y^80*z^4*t+77520*x^44*y^75*z^5*t-193800*x^48*y^70*z^6*t+387600*x^52*y^65*z^7*t-629850*x^56*y^60*z^8*t+839800*x^60*y^55*z^9*t-923780*x^64*y^50*z^10*t+839800*x^68*y^45*z^11*t-629850*x^72*y^40*z^12*t+387600*x^76*y^35*z^13*t-193800*x^80*y^30*z^14*t+77520*x^84*y^25*z^15*t-24225*x^88*y^20*z^16*t+5700*x^92*y^15*z^17*t-950*x^96*y^10*z^18*t+100*x^100*y^5*z^19*t-5*x^104*z^20*t-10*x^48*y^75*t^2+150*x^52*y^70*z*t^2-1050*x^56*y^65*z^2*t^2+4550*x^60*y^60*z^3*t^2-13650*x^64*y^55*z^4*t^2+30030*x^68*y^50*z^5*t^2-50050*x^72*y^45*z^6*t^2+64350*x^76*y^40*z^7*t^2-64350*x^80*y^35*z^8*t^2+50050*x^84*y^30*z^9*t^2-30030*x^88*y^25*z^10*t^2+13650*x^92*y^20*z^11*t^2-4550*x^96*y^15*z^12*t^2+1050*x^100*y^10*z^13*t^2-150*x^104*y^5*z^14*t^2+10*x^108*z^15*t^2-10*x^72*y^50*t^3+100*x^76*y^45*z*t^3-450*x^80*y^40*z^2*t^3+1200*x^84*y^35*z^3*t^3-2100*x^88*y^30*z^4*t^3+2520*x^92*y^25*z^5*t^3-2100*x^96*y^20*z^6*t^3+1200*x^100*y^15*z^7*t^3-450*x^104*y^10*z^8*t^3+100*x^108*y^5*z^9*t^3-10*x^112*z^10*t^3-5*x^96*y^25*t^4+25*x^100*y^20*z*t^4-50*x^104*y^15*z^2*t^4+50*x^108*y^10*z^3*t^4-25*x^112*y^5*z^4*t^4+5*x^116*z^5*t^4-x^120*t^5+x^124*u}, {-x^125, -x^124*y, x^120*y^5-x^124*z, -x^100*y^25+5*x^104*y^20*z-10*x^108*y^15*z^2+10*x^112*y^10*z^3-5*x^116*y^5*z^4+x^120*z^5-x^124*t, y^125-25*x^4*y^120*z+300*x^8*y^115*z^2-2300*x^12*y^110*z^3+12650*x^16*y^105*z^4-53130*x^20*y^100*z^5+177100*x^24*y^95*z^6-480700*x^28*y^90*z^7+1081575*x^32*y^85*z^8-2042975*x^36*y^80*z^9+3268760*x^40*y^75*z^10-4457400*x^44*y^70*z^11+5200300*x^48*y^65*z^12-5200300*x^52*y^60*z^13+4457400*x^56*y^55*z^14-3268760*x^60*y^50*z^15+2042975*x^64*y^45*z^16-1081575*x^68*y^40*z^17+480700*x^72*y^35*z^18-177100*x^76*y^30*z^19+53130*x^80*y^25*z^20-12650*x^84*y^20*z^21+2300*x^88*y^15*z^22-300*x^92*y^10*z^23+25*x^96*y^5*z^24-x^100*z^25+5*x^24*y^100*t-100*x^28*y^95*z*t+950*x^32*y^90*z^2*t-5700*x^36*y^85*z^3*t+24225*x^40*y^80*z^4*t-77520*x^44*y^75*z^5*t+193800*x^48*y^70*z^6*t-387600*x^52*y^65*z^7*t+629850*x^56*y^60*z^8*t-839800*x^60*y^55*z^9*t+923780*x^64*y^50*z^10*t-839800*x^68*y^45*z^11*t+629850*x^72*y^40*z^12*t-387600*x^76*y^35*z^13*t+193800*x^80*y^30*z^14*t-77520*x^84*y^25*z^15*t+24225*x^88*y^20*z^16*t-5700*x^92*y^15*z^17*t+950*x^96*y^10*z^18*t-100*x^100*y^5*z^19*t+5*x^104*z^20*t+10*x^48*y^75*t^2-150*x^52*y^70*z*t^2+1050*x^56*y^65*z^2*t^2-4550*x^60*y^60*z^3*t^2+13650*x^64*y^55*z^4*t^2-30030*x^68*y^50*z^5*t^2+50050*x^72*y^45*z^6*t^2-64350*x^76*y^40*z^7*t^2+64350*x^80*y^35*z^8*t^2-50050*x^84*y^30*z^9*t^2+30030*x^88*y^25*z^10*t^2-13650*x^92*y^20*z^11*t^2+4550*x^96*y^15*z^12*t^2-1050*x^100*y^10*z^13*t^2+150*x^104*y^5*z^14*t^2-10*x^108*z^15*t^2+10*x^72*y^50*t^3-100*x^76*y^45*z*t^3+450*x^80*y^40*z^2*t^3-1200*x^84*y^35*z^3*t^3+2100*x^88*y^30*z^4*t^3-2520*x^92*y^25*z^5*t^3+2100*x^96*y^20*z^6*t^3-1200*x^100*y^15*z^7*t^3+450*x^104*y^10*z^8*t^3-100*x^108*y^5*z^9*t^3+10*x^112*z^10*t^3+5*x^96*y^25*t^4-25*x^100*y^20*z*t^4+50*x^104*y^15*z^2*t^4-50*x^108*y^10*z^3*t^4+25*x^112*y^5*z^4*t^4-5*x^116*z^5*t^4+x^120*t^5-x^124*u}}
+
+
+o9 = true
+
+
+
+i10 : 107.538/0.256999
+
+o10 = 418.43742582656
+
+
+o10 : RR (of precision 53)
+
+
+
+i11 : exit
+
+Process M2 finished

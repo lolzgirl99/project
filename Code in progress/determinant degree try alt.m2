@@ -382,10 +382,18 @@ chooseRandomSubmatrix(ZZ, Matrix) := opts -> (n1, M1) ->
     return {rowL, colL};
     )
 
+--this takes in a list of locations in a matrix determining a submatrix
+--and returns the list of rows and columns.
+locationToSubmatrix = method();
+
+locationToSubmatrix(List) := (L1) ->
+(  {sort(L1#0), sort(L1#1)}  )
+
 newSingDimMinor= method(Options=>{MaxMinors => 1000});
 
 newSingDimMinor(Ring, Matrix) := opts -> (R1, M1) -> (
         ambR := ambient R1;
+        M1 = sub(M1, ambR);
         Id := ideal R1;
         n := numgens ambR;
         r := dim R1;
@@ -398,13 +406,13 @@ newSingDimMinor(Ring, Matrix) := opts -> (R1, M1) -> (
         searchedSet := new MutableHashTable from {}; --used to store which determinants have already been computed
 
         submatrixL1 := chooseSubmatrixLargestDegree(fullRank, mutM1);
-        searchedSet#(sort entries transpose matrix submatrixL1) = true;
+        searchedSet#(locationToSubmatrix(submatrixL1)) = true;
         mRowListL := submatrixL1#0;
         mColListL := submatrixL1#1;
         largestSubmatrix :=(M1^mRowListL)_mColListL;
 
         submatrixS1 := chooseSubmatrixSmallestDegree(fullRank, mutM2);
-        searchedSet#(sort entries transpose matrix submatrixS1) = true;
+        searchedSet#(locationToSubmatrix(submatrixS1)) = true;
         mRowListS := submatrixS1#0;
         mColListS := submatrixS1#1;
         smallestSubmatrix :=(M1^mRowListS)_mColListS;
@@ -429,9 +437,9 @@ newSingDimMinor(Ring, Matrix) := opts -> (R1, M1) -> (
 
             --grab the submatrix with largest likely determiant
             submatrixL1 = chooseSubmatrixLargestDegree(fullRank, mutM1);
-            if not (searchedSet#?(sort entries transpose matrix submatrixL1)) then
+            if not (searchedSet#?(locationToSubmatrix(submatrixL1))) then
             (
-                searchedSet#(sort entries transpose matrix submatrixL1) = true;
+                searchedSet#(locationToSubmatrix(submatrixL1)) = true;
                 mRowListL = submatrixL1#0;
                 mColListL = submatrixL1#1;
                 largestSubmatrix =(M1^mRowListL)_mColListL;
@@ -441,9 +449,9 @@ newSingDimMinor(Ring, Matrix) := opts -> (R1, M1) -> (
 
             --grab the submatrix with smallest likely determinant
             submatrixS1 = chooseSubmatrixSmallestDegree(fullRank, mutM2);
-            if not (searchedSet#?(sort entries transpose matrix submatrixS1)) then
+            if not (searchedSet#?(locationToSubmatrix(submatrixS1))) then
             (
-                searchedSet#(sort entries transpose matrix submatrixS1) = true;
+                searchedSet#(locationToSubmatrix(submatrixS1)) = true;
                 mRowListS = submatrixS1#0;
                 mColListS = submatrixS1#1;
                 smallestSubmatrix =(M1^mRowListS)_mColListS;
@@ -453,9 +461,9 @@ newSingDimMinor(Ring, Matrix) := opts -> (R1, M1) -> (
 
             --grab a random submatrix too
             submatrixR1 = chooseRandomSubmatrix(fullRank, M1);
-            if not (searchedSet#?(sort entries transpose matrix submatrixR1)) then
+            if not (searchedSet#?(locationToSubmatrix(submatrixR1))) then
             (
-                searchedSet#(sort entries transpose matrix submatrixR1) = true;
+                searchedSet#(locationToSubmatrix(submatrixR1)) = true;
                 mRowListR = submatrixR1#0;
                 mColListR = submatrixR1#1;
                 randomSubmatrix =(M1^mRowListR)_mColListR;
@@ -474,5 +482,5 @@ newSingDimMinor(Ring, Matrix) := opts -> (R1, M1) -> (
        -- 1/0;
         --print new Matrix from mutM1;
         --print new Matrix from mutM2;
-        return d;
+        return (d, searchedSet);
     );

@@ -318,7 +318,7 @@ replaceZeros(Matrix):= Matrix => o->(M2) -> (
     n := numColumns M2;
     M2ent := flatten entries M2;
     largeDeg := 1;
-    if (#M2ent > 0) then largeDeg = sum((degree max flatten entries M2));
+    if (#M2ent > 0) then largeDeg = 2*max(largeDeg, max(flatten apply(flatten entries M2, z->degree z)));
 
     largeGen := (last gens ambient ring M2)^(2*largeDeg+2);
 
@@ -865,7 +865,7 @@ getSubmatrixOfRank(ZZ, Matrix) := opts -> (n1, M0) -> (
     );
     subMatrix := null;
     val := null;
-    if (debugLevel > 0) or opts.Verbose then print ("getSubmatrixOfRank: Trying to find a submatrix of rank at least: " | toString(n1) | " with attempts = " | toString(attempts));
+    if (debugLevel > 0) or opts.Verbose then print ("getSubmatrixOfRank: Trying to find a submatrix of rank at least: " | toString(n1) | " with attempts = " | toString(attempts) | ".  DetStrategy=>" | toString(opts.DetStrategy));
     while (i < attempts)  do (
         subMatrix = internalChooseMinor(n1, ambRing, nonzeroM, M1, internalMinorsOptions++{MutableSmallest=>mutM2, MutableLargest=>mutM1});
         --if (debugLevel > 0) or opts.Verbose then print ("getSubmatrixOfRank: found subMatrix " | toString(subMatrix));
